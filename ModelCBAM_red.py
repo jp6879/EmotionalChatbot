@@ -122,6 +122,7 @@ def CreateModel():
     classifier = keras.models.Model(inputs=input_img, outputs=output)
 
     # Cargamos los pesos del modelo
-    classifier.load_weights(r'C:\Users\Propietario\Desktop\ib\ProyectoV2\EmotionalChatbot\models\ModelCBAM_red.h5')
+    classifier.load_weights('../EmotionalChatbot/models/ModelCBAM_red.h5')
+    # classifier.load_weights(r'C:\Users\Propietario\Desktop\ib\ProyectoV2\EmotionalChatbot\models\ModelCBAM_red.h5')
 
     return classifier

@@ -16,6 +16,13 @@ classifier = CreateModel()
 labels_emotions = ['enojado', 'con asco', 'con miedo', 'feliz', 'triste', 'sorprendido', 'neutral']
 
 # Inicializar el cliente de OpenAI
+
+# Es necesario tener una cuenta en OpenAI y obtener una API Key para utilizar el servicio
+# defaults to getting the key using os.environ.get("OPENAI_API_KEY")
+# if you saved the key under a different environment variable name, you can do something like:
+# client = OpenAI(
+#   api_key=os.environ.get("CUSTOM_ENV_NAME"),
+# )
 client = OpenAI()
 
 # Capturar el video con OpenCV
