@@ -1,0 +1,1 @@
+En este lugar deberían estar los modelos ModelCBAM_red.h5 y ModelCBAM.keras.

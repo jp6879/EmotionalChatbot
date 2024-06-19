@@ -10,18 +10,18 @@ from ModelCBAM_red import CreateModel
 # Inicializar el modelo de clasificación de emociones
 classifier = CreateModel()
 
-# Inicializar el cliente de OpenAI
-client = OpenAI()
-
 # Emociones a clasificar
 labels_emotions = ['enojado', 'feliz', 'triste', 'neutral']
+
+# Inicializar el cliente de OpenAI
+client = OpenAI()
 
 # Capturar el video con OpenCV
 cap = cv2.VideoCapture(0)
 
 def chatbot():
     # Cargar el clasificador de Haar Cascade para detección de rostros
-    face_cascade = cv2.CascadeClassifier('C:/Users/Propietario/AppData/Local/Programs/Python/Python311/Lib/site-packages/cv2/data/haarcascade_frontalface_default.xml')
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
     # Función para clasificar la emoción en la imagen
     def clasification(img):

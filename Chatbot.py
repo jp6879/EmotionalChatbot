@@ -1,71 +1,27 @@
 import cv2
 import threading
 import numpy as np
-import tensorflow as tf
 import keras
-from keras import layers
+import time
 from keras.models import load_model
 from openai import OpenAI
-import time
+from ModelCBAM import CreateModel
 
-# Inicializar el cliente de OpenAI
-client = OpenAI()
-
-# Definición de la capa CBAMBlock personalizada para mecanismos de atención en CNN
-@keras.saving.register_keras_serializable()
-class CBAMBlock(layers.Layer):
-    def __init__(self, filter_num, reduction_ratio=32, kernel_size=7, **kwargs):
-        super(CBAMBlock, self).__init__(**kwargs)
-        self.filter_num = filter_num
-        self.reduction_ratio = reduction_ratio
-        self.kernel_size = kernel_size
-
-        # Atención de Canal
-        self.global_avg_pool = layers.GlobalAveragePooling2D()
-        self.global_max_pool = layers.GlobalMaxPooling2D()
-        self.dense1 = layers.Dense(self.filter_num // self.reduction_ratio, activation='relu')
-        self.dense2 = layers.Dense(self.filter_num)
-        self.sigmoid = layers.Activation('sigmoid')
-        self.reshape = layers.Reshape((1, 1, self.filter_num))
-        self.multiply = layers.Multiply()
-
-        # Atención Espacial
-        self.conv2d = layers.Conv2D(1, kernel_size=self.kernel_size, padding='same')
-        self.spatial_sigmoid = layers.Activation('sigmoid')
-
-    def call(self, input_tensor):
-        axis = -1
-
-        # Atención de Canal
-        avg_pool = self.global_avg_pool(input_tensor)
-        max_pool = self.global_max_pool(input_tensor)
-        avg_out = self.dense2(self.dense1(avg_pool))
-        max_out = self.dense2(self.dense1(max_pool))
-        channel = self.sigmoid(avg_out + max_out)
-        channel = self.reshape(channel)
-        channel_out = self.multiply([input_tensor, channel])
-
-        # Atención Espacial
-        avg_pool2 = tf.reduce_mean(input_tensor, axis=axis, keepdims=True)
-        max_pool2 = tf.reduce_max(input_tensor, axis=axis, keepdims=True)
-        spatial = layers.concatenate([avg_pool2, max_pool2], axis=axis)
-        spatial_out = self.spatial_sigmoid(self.conv2d(spatial))
-
-        cbam_out = self.multiply([channel_out, spatial_out])
-        return cbam_out
+# Cargamos el modelo de clasificación de emociones
+classifier = CreateModel()
 
 # Emociones a clasificar
 labels_emotions = ['enojado', 'con asco', 'con miedo', 'feliz', 'triste', 'sorprendido', 'neutral']
 
-# Cargar el modelo de clasificación de emociones
-classifier = keras.models.load_model(r'C:\Users\Propietario\Desktop\ib\ProyectoV2\EmotionalChatbot\models\ModelCBAM.keras')
+# Inicializar el cliente de OpenAI
+client = OpenAI()
 
 # Capturar el video con OpenCV
 cap = cv2.VideoCapture(0)
 
 def chatbot():
     # Cargar el clasificador de Haar Cascade para detección de rostros
-    face_cascade = cv2.CascadeClassifier(r'C:/Users/Propietario/AppData/Local/Programs/Python/Python311/Lib/site-packages/cv2/data/haarcascade_frontalface_default.xml')
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
     # Función para clasificar la emoción en la imagen
     def clasification(img):
