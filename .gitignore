@@ -11,3 +11,4 @@ models/ModelCBAM_red.h5
 models/modelCBAM_red.keras
 models/ModelCBAM.keras
 models/STN_FER.keras
+**/__pycache__/
