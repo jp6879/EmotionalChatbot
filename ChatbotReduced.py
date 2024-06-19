@@ -6,6 +6,7 @@ import time
 from openai import OpenAI
 from ModelCBAM_red import CreateModel
 
+# Escribiendo quit en la consola se cierra el programa o sinó seleccionando la ventana de video y presionando la tecla 'q'
 
 # Inicializar el modelo de clasificación de emociones
 classifier = CreateModel()

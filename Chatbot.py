@@ -7,6 +7,8 @@ from keras.models import load_model
 from openai import OpenAI
 from ModelCBAM import CreateModel
 
+# Escribiendo quit en la consola se cierra el programa o sinó seleccionando la ventana de video y presionando la tecla 'q'
+
 # Cargamos el modelo de clasificación de emociones
 classifier = CreateModel()
 
